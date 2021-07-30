@@ -1,0 +1,14 @@
+I"�<p>Hi there<br />
+My name is Farhad. I’m a software developer. Let’s keep it short. I have some experience in:</p>
+
+<ul>
+  <li>Backend development (Most of the time, this is my job title)</li>
+  <li>Publish and maintenance automation scripts and configurations (Fun, except that one time that I dropped the database. Not fun.)</li>
+  <li>Designing and configuring network and security infrastructure of our own distributed software on private servers</li>
+  <li>Splitting monolith app into multiple independant set of services to load balance and increase HA</li>
+</ul>
+
+<p>From the begining of this year (2021) I’m discovering <code class="language-plaintext highlighter-rouge">Serverless</code> and <code class="language-plaintext highlighter-rouge">AWS Lambda functions</code> while implementing a software in Fintech field (No it’s not <code class="language-plaintext highlighter-rouge">yet another promising crypto exchange</code>). I’m developing this fully serverless app with <code class="language-plaintext highlighter-rouge">Go</code>.</p>
+
+<p>In this blog, I will share my latest thoughts and discoveries about my challenges, workarounds, decisions, trade-offs, and resolved problems in this project.</p>
+:ET

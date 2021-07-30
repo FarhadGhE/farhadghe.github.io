@@ -1,0 +1,10 @@
+I"><p>Hi there<br />
+My name is Farhad. I’m a software developer. Let’s keep it short. I have some experience in:</p>
+
+<ul>
+  <li>Backend development (Most of the time, this is my job title)</li>
+  <li>Publish and maintenance automation scripts and configurations (Fun, except that one time that I dropped the database. Not fun.)</li>
+  <li>Designing and configuring network and security infrastructure of our own distributed software on private servers</li>
+  <li>Splitting monolith app into multiple independant set of services to load balance and increase HA</li>
+</ul>
+:ET
