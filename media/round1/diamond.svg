@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Diamond (diamond): a cut stone in glass blue, its facets catching the light: the richest find on the surface. Drawn by Claude for Round1, PersistentZone round 07. -->
+  <path d="M30 44 L46 22 H82 L98 44 L64 108 Z" fill="#6bc5ff" stroke="#05070b" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M30 44 H98 M46 22 L54 44 L64 108 M82 22 L74 44 L64 108 M54 44 L64 22 L74 44" fill="none" stroke="#05070b" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M48 26 L52 40" stroke="#d8f1ff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M36 48 L58 92" stroke="#eef4f9" stroke-width="2.4" stroke-linecap="round" opacity=".6"/>
+</svg>
