@@ -69,8 +69,8 @@ for (const entry of sections) {
     });
   }
   if (d.portrait && !portrait) {
-    // 300 px for a picture shown at most 150 px wide, sharp on high-density screens.
-    const img = await getImage({ src: d.portrait.src, width: 300, height: 300, format: 'webp', quality: 82 });
+    // 400 px for a picture shown at most 184 px wide, sharp on high-density screens.
+    const img = await getImage({ src: d.portrait.src, width: 400, height: 400, format: 'webp', quality: 82 });
     portrait = { src: img.src, alt: d.portrait.alt };
   }
   if (d.items?.length) {
@@ -100,7 +100,7 @@ const [firstName, ...lastNames] = site.name.split(' ');
     <main id="main">
     <div class="top">
       <h1>{firstName}<br />{lastNames.join(' ')}</h1>
-      {portrait && <img src={portrait.src} alt={portrait.alt} width="150" height="150" />}
+      {portrait && <img src={portrait.src} alt={portrait.alt} width="184" height="184" />}
     </div>
     <p class="lede">{site.lede}</p>
     <button type="button" class="all" aria-expanded="false" data-open={site.ui.foldAll} data-closed={site.ui.readAll}>{site.ui.readAll}</button>
