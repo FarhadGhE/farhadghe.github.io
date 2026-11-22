@@ -1,0 +1,18 @@
+---
+// GitHub Pages serves this for any address that has no page, including the 2021 blog's old addresses.
+import { getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+
+const site = (await getEntry('site', 'site'))!.data;
+---
+<Base title={`${site.notFound.title} · ${site.title}`} noindex showDraftTag={site.draft}>
+  <div class="wrap">
+    <Header site={site} />
+    <main id="main" class="lost">
+      <h1>{site.notFound.title}</h1>
+      <p>{site.notFound.text}</p>
+      <a class="btn" href="/">{site.notFound.link}</a>
+    </main>
+  </div>
+</Base>

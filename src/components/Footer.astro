@@ -1,0 +1,6 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { site: CollectionEntry<'site'>['data']; }
+const { site } = Astro.props;
+---
+<footer>{site.footer.map((line) => <p>{line}</p>)}</footer>

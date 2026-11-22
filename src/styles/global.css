@@ -1,0 +1,73 @@
+/* Skim (FirstVersion round 16, version A, Farhad's choice of 2026-11-22): a white page, black heavy type, one yellow
+   marker. Every piece of the page is folded to one big line; a click opens the rest under it, and one button opens
+   everything. System fonts only, so the page loads no font file. */
+*, *::before, *::after { box-sizing: border-box; }
+img { display: block; max-width: 100%; }
+
+:root { --ink: #0b0b0c; --hl: #ffe24d; --soft: #68686e; --rule: #dcdcdc; --paper: #fff; }
+html { -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 19px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+a { color: inherit; text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.skip { position: absolute; left: 12px; top: -60px; z-index: 10; padding: 10px 14px; background: var(--ink); color: var(--paper); font: 700 14px/1 ui-monospace, "SF Mono", Menlo, monospace; }
+.skip:focus { top: 12px; }
+.draft-tag { margin: 0; padding: 7px 18px; text-align: center; font: 700 11.5px/1.3 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .06em; text-transform: uppercase; background: var(--hl); }
+.draft-tag p { margin: 0; }
+
+.wrap { max-width: 1060px; margin: 0 auto; padding: 0 clamp(18px, 5vw, 56px) 110px; }
+.bar { display: flex; gap: 18px; padding: 18px 0; font: 700 13px/1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .04em; }
+.bar a { text-decoration: none; }
+.bar a:hover { text-decoration: underline; }
+.bar nav { margin-left: auto; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 28px; align-items: end; margin: clamp(22px, 6vh, 70px) 0 26px; }
+h1 { margin: 0; font-weight: 900; font-size: clamp(60px, 13vw, 188px); line-height: .82; letter-spacing: -.065em; }
+.top img { width: clamp(84px, 12vw, 150px); height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 50%; filter: grayscale(1) contrast(1.08); }
+.lede { max-width: 31em; margin: 0 0 24px; font-size: clamp(19px, 2vw, 26px); line-height: 1.38; }
+.all, .btn { display: inline-block; padding: 12px 18px; border: 2.5px solid var(--ink); background: var(--hl); color: var(--ink); font: 800 14px/1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .04em; text-decoration: none; cursor: pointer; }
+
+section { margin-top: 52px; border-top: 4px solid var(--ink); }
+section > h2 { margin: 12px 0 0; font: 800 13px/1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .11em; text-transform: uppercase; }
+details { border-bottom: 1px solid var(--rule); }
+summary { display: grid; grid-template-columns: 2.6em minmax(0, 1fr) 1.2em; gap: 10px; align-items: baseline; padding: 20px 0; cursor: pointer; list-style: none; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; justify-self: end; font: 300 36px/.6 system-ui, sans-serif; }
+details[open] > summary::after { content: "\2013"; }
+summary:hover .t { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
+.n { font: 700 13px/1 ui-monospace, "SF Mono", Menlo, monospace; color: var(--soft); }
+.t { font-weight: 850; font-size: clamp(27px, 4.5vw, 58px); line-height: 1.04; letter-spacing: -.04em; }
+.t q { display: block; quotes: none; }
+.t q + q { margin-top: .22em; }
+mark, .more strong { background: linear-gradient(transparent 56%, var(--hl) 56%); color: inherit; font-weight: inherit; }
+.more strong { font-weight: 700; }
+.more { max-width: 35em; padding: 0 0 26px calc(2.6em + 10px); font-size: 20px; }
+.more p { margin: 0 0 .7em; }
+.mid .t { font-weight: 750; font-size: clamp(21px, 2.7vw, 32px); line-height: 1.12; letter-spacing: -.025em; }
+.thing .t { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.pic { display: block; overflow: hidden; background: #d9d6cf; }
+.pic img { width: 100%; height: 100%; object-fit: cover; }
+.pic.art { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; background: #0d141c; }
+.pic.art img { min-width: 0; min-height: 0; object-fit: contain; padding: 16%; }
+.pic.plot { border: 2px dashed rgb(128 128 128 / .6); background: repeating-linear-gradient(135deg, transparent 0 9px, rgb(128 128 128 / .22) 9px 10px); }
+.thing .pic { width: 54px; height: 54px; border-radius: 8px; flex: none; }
+.state { padding: 5px 9px; border: 2px solid var(--ink); font: 800 11px/1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .08em; text-transform: uppercase; }
+.links { display: flex; flex-wrap: wrap; gap: 8px 20px; font-weight: 700; }
+.jobs { list-style: none; margin: 0; padding: 0; }
+.jobs li { padding: 6px 0; }
+.jobs .when { font: 700 13px/1 ui-monospace, "SF Mono", Menlo, monospace; margin-right: 10px; }
+.jobs .role { color: var(--soft); }
+footer { margin-top: 60px; padding-top: 16px; border-top: 4px solid var(--ink); color: var(--soft); font-size: 15px; }
+footer p { margin: 0; }
+
+/* The 404 page */
+.lost { padding-top: clamp(22px, 6vh, 70px); }
+.lost h1 { margin-bottom: 28px; }
+.lost p { max-width: 31em; margin: 0 0 24px; font-size: clamp(19px, 2vw, 26px); line-height: 1.38; }
+
+@media (max-width: 600px) {
+  .top { grid-template-columns: minmax(0, 1fr); }
+  .top img { order: -1; }
+  .more { padding-left: 0; }
+  summary { grid-template-columns: 1.9em minmax(0, 1fr) 1em; }
+}

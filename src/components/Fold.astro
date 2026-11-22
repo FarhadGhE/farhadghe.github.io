@@ -1,0 +1,6 @@
+---
+// One folded line: its number, its big line (the `line` slot), and the rest, shown under it on a click.
+interface Props { n: string; kind?: 'mid' | 'mid thing'; }
+const { n, kind } = Astro.props;
+---
+<details class={kind}><summary><span class="n">{n}</span><span class="t"><slot name="line" /></span></summary><div class="more"><slot /></div></details>

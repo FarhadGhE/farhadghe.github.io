@@ -1,53 +1,48 @@
-# Chirpy Starter [![Gem Version](https://img.shields.io/gem/v/jekyll-theme-chirpy)](https://rubygems.org/gems/jekyll-theme-chirpy) [![GitHub license](https://img.shields.io/github/license/cotes2020/chirpy-starter.svg?color=blue)][mit]
+# fargh.com
 
+Farhad Gholami's site: who I am and what I've done, and at the bottom a few small things I made in my spare time
+(Round1, Spacetime Slicer, flow). Built with [Astro](https://astro.build) into static files for GitHub Pages. The
+decisions behind it are in [docs/adr](docs/adr/README.md).
 
-The startup template for [**Jekyll Theme Chirpy**][chirpy].
+## Run it
 
-When installing the **Chirpy** theme through [RubyGems][gem], Jekyll can only read files in the folders `_includes`, `_layout`, `_sass` and `assets`, as well as a small part of options of the `_config.yml` file from the theme's gem. (You can find the gem files by using the command `bundle info --path jekyll-theme-chirpy`). To fully use all the features of **Chirpy**, you need to copy the other critical files/directories from the theme's gem to your Jekyll site.
-
-The critical files/directories to run or build the **Chirpy** theme are as follows:
-
-```shell
-.
-├── _data
-├── _plugins
-├── _tabs
-├── _config.yml
-└──  index.html
+```sh
+npm start
 ```
 
-So we've extracted all the **Chirpy** gem necessary content here to help you get started quickly.
+The first run installs the dependencies into `node_modules/`. Then it starts the dev server and prints the address
+to open, `http://localhost:4321/`. Edits to the words in `src/content/` show up as you save. Ctrl+C stops it.
 
-## Installation
+You need Node 22.23.4 or newer. Nothing is installed outside this folder: `.npmrc` keeps npm's cache in
+`.npm-cache/`, and Astro's telemetry is off ([ADR 0001](docs/adr/0001-static-site-stack.md)). npm may warn that it
+held back `fsevents`' build script. Nothing is missing: `fsevents` ships a ready-made binary.
 
-[Use this template][usetemplate] to generate a new repository, and then execute:
+## Build
 
-[usetemplate]: https://github.com/cotes2020/chirpy-starter/generate
+| Command | What it does |
+|---|---|
+| `npm run build` | writes the static site to `dist/` |
+| `npm run preview` | serves `dist/` the way GitHub Pages would |
+| `npm run check` | checks `dist/`: no `spacetime-slicer/` path, every in-page link lands, no em-dash in the words, the first screen's weight; `npm run check -- --online` also opens every outside link |
 
-```
-$ bundle
-```
+## Where things are
 
-## Usage
+| Path | What it holds | Owner in the manage repo |
+|---|---|---|
+| `src/content/`, `src/content.config.ts` | the words, as Markdown drafts with their sources, and the images the build processes | Content |
+| `public/media/` | media copied as they are: Round1's pictures | Content |
+| `src/` (the rest), `public/` (the rest) | layouts, components, pages, styles, scripts, the favicon | Design |
+| `docs/adr/`, `tools/`, `.github/`, `CNAME` | decisions, scripts, the deploy workflow | Architecture |
+| `package.json`, `package-lock.json`, `astro.config.mjs`, `tsconfig.json`, `.gitignore`, `.npmrc`, `README.md`, `LICENSE` | shared files | Architecture |
 
-Please see the [theme's docs](https://github.com/cotes2020/jekyll-theme-chirpy#usage).
+## Not in this repo
 
-## Upgrading
+- https://fargh.com/spacetime-slicer/ is the [Spacetime Slicer](https://github.com/FarhadGhE/spacetime-slicer) repo's
+  own Pages site, under the same domain. This site never makes a `spacetime-slicer/` path.
+- https://round1.fargh.com is the Round1 game's own server.
 
-First, please modify the target version number of `jekyll-theme-chirpy` in the `Gemfile` (e.g., `gem "jekyll-theme-chirpy", "~> 4.0", ">= 4.0.1"`).
+## Publishing
 
-After that, execute the following command:
-
-```console
-$ bundle update jekyll-theme-chirpy
-```
-
-As the version upgrades, the critical files and configuration options will change. Please refer to the [Upgrade Guide](https://github.com/cotes2020/jekyll-theme-chirpy/wiki/Upgrade-Guide) to keep your website files in sync with the latest version of the theme.
-
-## License
-
-This work is published under [MIT][mit] License.
-
-[gem]: https://rubygems.org/gems/jekyll-theme-chirpy
-[chirpy]: https://github.com/cotes2020/jekyll-theme-chirpy/
-[mit]: https://github.com/cotes2020/chirpy-starter/blob/master/LICENSE
+A push to `main` publishes fargh.com: `.github/workflows/pages-deploy.yml` installs, builds, runs `npm run check` and
+puts `dist/` on `gh-pages` (with `CNAME` and `.nojekyll`), which GitHub Pages serves. `public/sw.js` retires the 2021
+site's service worker. The decisions are in `docs/adr/0002-publishing.md`.

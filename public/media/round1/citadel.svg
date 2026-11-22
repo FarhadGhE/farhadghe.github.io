@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Citadel vault (citadel): a corner place's logo on the map, the old citadel's gate under its battlements, on the peak of its family. Drawn by Claude for Round1, PersistentZone r12. -->
+  <g stroke="#05070b" stroke-width="3" stroke-linejoin="round">
+    <polygon points="64,12 118,110 10,110" fill="#4a5662"/>
+    <path d="M40 100 V62 H46 V54 H54 V62 H60 V54 H68 V62 H74 V54 H82 V62 H88 V100 Z" fill="#c9d1d8"/><path d="M54 100 V82 Q64 68 74 82 V100 Z" fill="#1b2128"/>
+  </g>
+</svg>

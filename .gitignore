@@ -1,0 +1,11 @@
+# Dependencies and npm's cache (.npmrc keeps it here)
+node_modules/
+.npm-cache/
+
+# Build output and Astro's generated types
+dist/
+.astro/
+
+# Logs and system files
+npm-debug.log*
+.DS_Store

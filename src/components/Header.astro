@@ -1,0 +1,8 @@
+---
+// The bar on top: the mark and the four profiles.
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { site: CollectionEntry<'site'>['data']; }
+const { site } = Astro.props;
+---
+<header class="bar"><a href="/">fargh.com</a><nav aria-label={site.ui.elsewhere}>{site.social.map((l) => <a href={l.href}>{l.label}</a>)}</nav></header>

@@ -1,73 +1,27 @@
 #!/usr/bin/env bash
 #
-# Deploy the content of _site to 'origin/<pages_branch>'
+# Puts the built site (dist/) on the gh-pages branch, which GitHub Pages serves at fargh.com. Runs only in the
+# workflow (.github/workflows/pages-deploy.yml), after `npm run build` and `npm run check`. gh-pages is replaced by
+# one fresh commit each time; its history is not kept, as before.
 
-set -eu
+set -euo pipefail
 
-PAGES_BRANCH="gh-pages"
+if [[ -z ${GITHUB_ACTIONS+x} ]]; then
+  echo "ERROR: deploy.sh runs only in GitHub Actions." >&2
+  exit 1
+fi
 
-_no_branch=false
-_backup_dir="$(mktemp -d)"
+[[ -f dist/index.html ]] || { echo "ERROR: no dist/index.html; run npm run build first." >&2; exit 1; }
 
-init() {
-  if [[ -z ${GITHUB_ACTION+x} ]]; then
-    echo "ERROR: This script is not allowed to run outside of GitHub Action."
-    exit -1
-  fi
+# The custom domain, and no Jekyll pass: Pages would otherwise drop folders starting with "_" (Astro's _astro/).
+cp CNAME dist/CNAME
+touch dist/.nojekyll
 
-  # Gemfile could be changed by `bundle install` in actions workflow
-  if [[ -n $(git ls-files | grep Gemfile.lock) && -n \
-  $(git status Gemfile.lock --porcelain) ]]; then
-    git checkout -- Gemfile.lock
-  fi
-
-  if [[ -z $(git branch -av | grep "$PAGES_BRANCH") ]]; then
-    _no_branch=true
-    git checkout -b "$PAGES_BRANCH"
-  else
-    git checkout "$PAGES_BRANCH"
-  fi
-}
-
-backup() {
-  mv _site/* "$_backup_dir"
-  mv .git "$_backup_dir"
-
-  # When adding custom domain from Github website,
-  # the CANME only exist on `gh-pages` branch
-  if [[ -f CNAME ]]; then
-    mv CNAME "$_backup_dir"
-  fi
-}
-
-flush() {
-  rm -rf ./*
-  rm -rf .[^.] .??*
-
-  shopt -s dotglob nullglob
-  mv "$_backup_dir"/* .
-}
-
-deploy() {
-  git config --global user.name "GitHub Actions"
-  git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-  git update-ref -d HEAD
-  git add -A
-  git commit -m "[Automation] Site update No.${GITHUB_RUN_NUMBER}"
-
-  if $_no_branch; then
-    git push -u origin "$PAGES_BRANCH"
-  else
-    git push -f
-  fi
-}
-
-main() {
-  init
-  backup
-  flush
-  deploy
-}
-
-main
+cd dist
+git init -q -b gh-pages
+git config user.name "GitHub Actions"
+git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+git add -A
+git commit -q -m "Publish ${GITHUB_SHA:0:7} (run ${GITHUB_RUN_NUMBER})"
+git push -q --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
+echo "Published ${GITHUB_SHA:0:7} to gh-pages."

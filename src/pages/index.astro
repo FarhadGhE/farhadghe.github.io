@@ -1,0 +1,132 @@
+---
+// The home page, Skim: the name, the portrait, the line under the name and one button, then every piece of the page
+// folded to one big line, in this order: the introduction's paragraphs, its "Useless information", the years, and the
+// small things made in spare time. A paragraph's big line is its bold phrases with the marker, or its first sentence
+// when it has none; a fact's is its first sentence; the years' is the current job; a thing's is its picture, title
+// and state. A click opens the rest under it; the button opens or folds them all.
+import { getCollection, getEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Fold from '../components/Fold.astro';
+import Footer from '../components/Footer.astro';
+
+const site = (await getEntry('site', 'site'))!.data;
+const sections = (await getCollection('sections')).sort((a, b) => a.data.order - b.data.order);
+
+// The words come as Markdown: paragraphs, **bold**, [links](…), and one "### " heading before a list of facts.
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const outside = (href: string, label: string) =>
+  `<a href="${esc(href)}">${label} <span aria-hidden="true">↗</span><span class="sr-only"> (${esc(site.ui.opensOutside)})</span></a>`;
+const rich = (s: string) => esc(s)
+  .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+  .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, href) => (/^https?:/.test(href) ? outside(href, label) : `<a href="${href}">${label}</a>`));
+const plain = (s: string) => s.replace(/\*\*/g, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+const first = (s: string) => (plain(s).match(/^.*?[.!?](?=\s|$)/) || [plain(s)])[0];
+const rest = (s: string) => plain(s).slice(first(s).length).trim();
+const bolds = (s: string) => [...s.matchAll(/\*\*(.+?)\*\*/g)].map((m) => plain(m[1]));
+const num = (i: number) => String(i + 1).padStart(2, '0');
+
+type Line = { n: string; kind?: 'mid' | 'mid thing'; line: string; more: string };
+type Part = { title: string; lines: Line[] };
+const parts: Part[] = [];
+let portrait: { src: string; alt: string } | undefined;
+
+for (const entry of sections) {
+  const d = entry.data;
+  // A section of small things shows only its things, as in the sample Farhad chose; its own words stay unshown.
+  const body = d.items?.length ? '' : (entry.body ?? '').trim();
+  if (body) {
+    const [words, factsPart = ''] = body.split(/^### .*$/m);
+    const paras = words.trim().split(/\n\s*\n/).map((p) => p.replace(/\s*\n\s*/g, ' ')).filter(Boolean);
+    if (paras.length) parts.push({
+      title: d.title,
+      lines: paras.map((p, i) => ({
+        n: num(i),
+        line: bolds(p).length ? bolds(p).map((b) => `<q><mark>${esc(b)}</mark></q>`).join('') : esc(first(p)),
+        more: `<p>${rich(p)}</p>`,
+      })),
+    });
+    const factsTitle = body.match(/^### (.*)$/m)?.[1];
+    if (factsTitle) {
+      const facts = factsPart.trim().split(/\n(?=- )/).map((t) => t.replace(/^- /, '').replace(/\s*\n\s*/g, ' '));
+      parts.push({
+        title: factsTitle,
+        lines: facts.map((t, i) => ({ n: num(i), kind: 'mid', line: esc(first(t)), more: `<p>${rich(rest(t))}</p>` })),
+      });
+    }
+  }
+  if (d.history?.length && d.historyTitle) {
+    const [now, ...before] = d.history; // newest first in the file
+    parts.push({
+      title: d.historyTitle,
+      lines: [{
+        n: esc(now.years.slice(0, 4)),
+        kind: 'mid',
+        line: `${esc(now.role)}, ${esc(now.org)}`,
+        more: `<ol class="jobs">${before.map((y) => `<li><span class="when">${esc(y.years)}</span>${esc(y.org)} <span class="role">· ${esc(y.role)}</span></li>`).join('')}</ol>`,
+      }],
+    });
+  }
+  if (d.portrait && !portrait) {
+    // 300 px for a picture shown at most 150 px wide, sharp on high-density screens.
+    const img = await getImage({ src: d.portrait.src, width: 300, height: 300, format: 'webp', quality: 82 });
+    portrait = { src: img.src, alt: d.portrait.alt };
+  }
+  if (d.items?.length) {
+    const lines: Line[] = [];
+    for (const [i, t] of d.items.entries()) {
+      let pic = '<span class="pic plot"></span>';
+      if (t.art) pic = `<span class="pic art">${t.art.map((a) => `<img src="${esc(a)}" alt="" width="27" height="27" loading="lazy" decoding="async">`).join('')}</span>`;
+      else if (t.still) {
+        // 108 px for a 54 px square.
+        const img = await getImage({ src: t.still.src, width: 108, height: 108, fit: 'cover', format: 'webp', quality: 72 });
+        pic = `<span class="pic"><img src="${img.src}" alt="" width="54" height="54" loading="lazy" decoding="async"></span>`;
+      }
+      const text = t.text.split('\n').map((x) => `<p>${rich(x)}</p>`).join('');
+      const links = t.links.length ? `<div class="links">${t.links.map((l) => outside(l.href, esc(l.label))).join('')}</div>` : '';
+      lines.push({ n: num(i), kind: 'mid thing', line: `${pic}${esc(t.title)}<span class="state">${esc(t.state)}</span>`, more: text + links });
+    }
+    parts.push({ title: d.title, lines });
+  }
+}
+
+const anyDraft = site.draft || sections.some((s) => s.data.draft);
+const [firstName, ...lastNames] = site.name.split(' ');
+---
+<Base showDraftTag={anyDraft}>
+  <div class="wrap">
+    <Header site={site} />
+    <main id="main">
+    <div class="top">
+      <h1>{firstName}<br />{lastNames.join(' ')}</h1>
+      {portrait && <img src={portrait.src} alt={portrait.alt} width="150" height="150" />}
+    </div>
+    <p class="lede">{site.lede}</p>
+    <button type="button" class="all" aria-expanded="false" data-open={site.ui.foldAll} data-closed={site.ui.readAll}>{site.ui.readAll}</button>
+      {parts.map((part) => (
+        <section>
+          <h2>{part.title}</h2>
+          {part.lines.map((l) => (
+            <Fold n={l.n} kind={l.kind}>
+              <Fragment slot="line" set:html={l.line} />
+              <Fragment set:html={l.more} />
+            </Fold>
+          ))}
+        </section>
+      ))}
+    </main>
+    <Footer site={site} />
+  </div>
+  <script>
+    // "Read them all": opens every folded line, then folds them all back.
+    const all = document.querySelector<HTMLButtonElement>('.all');
+    const folds = [...document.querySelectorAll('details')];
+    all?.addEventListener('click', () => {
+      const open = all.getAttribute('aria-expanded') !== 'true';
+      folds.forEach((d) => { d.open = open; });
+      all.setAttribute('aria-expanded', String(open));
+      all.textContent = (open ? all.dataset.open : all.dataset.closed) ?? '';
+    });
+  </script>
+</Base>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80" width="160" height="80">
+  <!-- Crossbow (crossbow): seen from above, bolt loaded, limbs curved forward. Drawn by Claude for Round1, GameArts r01; conformed to art/STYLE.md in r02. -->
+  <g stroke="#05070b" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M104 8 Q128 40 104 72" fill="none" stroke-width="8"/>
+    <path d="M10 33 Q10 31 12 31 L40 35.5 H114 Q117 35.5 117 38 V42 Q117 44.5 114 44.5 H40 L12 49 Q10 49 10 47 Z" fill="#5d6b3c"/>
+    <rect x="116" y="35" width="8" height="10" rx="2" fill="#3b444e"/>
+  </g>
+  <path d="M104 8 Q128 40 104 72" fill="none" stroke="#56616d" stroke-width="4.2" stroke-linecap="round"/>
+  <path d="M104 8 L66 40 L104 72" fill="none" stroke="#c9d1d8" stroke-width="1.3"/>
+  <rect x="44" y="38.3" width="68" height="3.4" rx="1.7" fill="#3b444e"/>
+  <g stroke="#05070b" stroke-width="1.6" stroke-linejoin="round">
+    <rect x="66" y="38.6" width="66" height="2.8" rx="1.2" fill="#c9d1d8"/>
+    <path d="M132 37 L141 40 L132 43 Z" fill="#c9d1d8"/>
+    <path d="M66 40 L60 35.5 H70 Z M66 40 L60 44.5 H70 Z" fill="#ff4d4d"/>
+  </g>
+  <path d="M14 40 H38" stroke="#7b8b55" stroke-width="2" stroke-linecap="round"/>
+</svg>

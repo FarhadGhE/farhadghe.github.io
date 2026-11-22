@@ -1,52 +1,42 @@
-name: 'Automatic build'
+# Publishes fargh.com: on every push to main, build the Astro site, check it, and put dist/ on gh-pages, the branch
+# GitHub Pages serves (docs/adr/0002-publishing.md). Pages' own settings are not changed by this file.
+name: Publish fargh.com
+
 on:
   push:
     branches:
       - main
-    paths-ignore:
-      - .gitignore
-      - LICENSE
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
 
 jobs:
-  continuous-delivery:
-
+  publish:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
+
+      - name: Node
+        uses: actions/setup-node@v5
         with:
-          fetch-depth: 0  # for posts's lastmod
+          node-version: 24
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
-          bundler-cache: true
+      - name: Install
+        run: npm ci
 
-      - name: Check baseurl
-        run: |
-          baseurl="$(grep '^baseurl:' _config.yml | sed "s/.*: *//;s/['\"]//g;s/#.*//")"
-          if [[ -n $baseurl ]]; then
-            echo "BASE_URL=$baseurl" >> $GITHUB_ENV
-          fi
+      - name: Build
+        run: npm run build
 
-      - name: Build Site
+      - name: Check
+        run: npm run check
+
+      - name: Publish to gh-pages
         env:
-          JEKYLL_ENV: production
-        run: |
-          bundle exec jekyll b -d "_site$BASE_URL"
-
-      - name: Test Site
-        run: |
-          bash tools/test.sh
-
-      - name: Deploy
-        run: |
-          if [[ -n $BASE_URL ]]; then
-            mv _site$BASE_URL _site-rename
-            rm -rf _site
-            mv _site-rename _site
-          fi
-
-          bash tools/deploy.sh
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash tools/deploy.sh
